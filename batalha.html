@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Batalha - Jogo RPG</title>
+
+    <link
+        rel="stylesheet"
+        href="./assets/css/style.css"
+    >
+</head>
+
+<body>
+    <main class="container batalha-container">
+        <h1>⚔️ Batalha RPG</h1>
+
+        <p>
+            Escolha uma ação para executar em cada round.
+        </p>
+
+        <section class="painel-round">
+            <strong>Round atual:</strong>
+            <span id="roundAtual">1</span>
+        </section>
+
+        <section class="arena-batalha">
+            <article
+                id="cardJogador"
+                class="card-batalha"
+            ></article>
+
+            <div class="versus">
+                VS
+            </div>
+
+            <article
+                id="cardAdversario"
+                class="card-batalha"
+            ></article>
+        </section>
+
+        <section class="box">
+            <h2>Escolha sua ação</h2>
+
+            <div class="acoes-batalha">
+                <button
+                    id="btnAtaque"
+                    class="btn-acao"
+                    type="button"
+                >
+                    ⚔️ Ataque
+                </button>
+
+                <button
+                    id="btnEspecial"
+                    class="btn-acao"
+                    type="button"
+                >
+                    ✨ Ataque Especial
+                </button>
+
+                <button
+                    id="btnDefesa"
+                    class="btn-acao"
+                    type="button"
+                >
+                    🛡️ Defesa
+                </button>
+            </div>
+        </section>
+
+        <section class="box">
+            <h2>Histórico da Batalha</h2>
+
+            <pre id="logBatalha"></pre>
+        </section>
+
+        <section
+            id="resultadoBatalha"
+            class="resultado-batalha oculto"
+        ></section>
+
+        <div class="acoes">
+            <a href="./herois.html">
+                <button type="button">
+                    Reiniciar seleção
+                </button>
+            </a>
+
+            <a href="./index.html">
+                <button type="button">
+                    Sair
+                </button>
+            </a>
+        </div>
+    </main>
+
+    <!-- MODELS DOS HERÓIS -->
+    <script src="./src/model/Heroi.js"></script>
+    <script src="./src/model/Guerreiro.js"></script>
+    <script src="./src/model/Arqueiro.js"></script>
+    <script src="./src/model/Mago.js"></script>
+
+    <!-- MODELS DOS EQUIPAMENTOS -->
+    <script src="./src/model/Equipamento.js"></script>
+    <script src="./src/model/Arma.js"></script>
+    <script src="./src/model/Armadura.js"></script>
+    <script src="./src/model/Pocao.js"></script>
+
+    <!-- MODEL DA BATALHA -->
+    <script src="./src/model/Batalha.js"></script>
+
+    <!-- DADOS MOCKADOS -->
+    <script src="./src/data/heroisMock.js"></script>
+    <script src="./src/data/equipamentosMock.js"></script>
+
+    <!-- VIEW -->
+    <script src="./src/view/BatalhaView.js"></script>
+
+    <!-- CONTROLLER -->
+    <script src="./src/controller/batalhaController.js"></script>
+</body>
+</html>

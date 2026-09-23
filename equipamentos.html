@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipamentos - Jogo RPG</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Catálogo de Equipamentos</h1>
+        <p>Área administrativa para visualizar os equipamentos mockados.</p>
+
+        <section class="box">
+            <div class="form-group">
+                <label for="filtroHabilidade">Filtrar por habilidade</label>
+                <select id="filtroHabilidade">
+                    <option value="Todas">Todas</option>
+                    <option value="Força">Força</option>
+                    <option value="Agilidade">Agilidade</option>
+                    <option value="Sabedoria">Sabedoria</option>
+                </select>
+            </div>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Habilidade</th>
+                            <th>Ataque</th>
+                            <th>Defesa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabela"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="acoes">
+            <a href="./index.html"><button type="button">Sair</button></a>
+        </div>
+    </main>
+
+    <script src="./src/model/Equipamento.js"></script>
+    <script src="./src/model/Arma.js"></script>
+    <script src="./src/model/Armadura.js"></script>
+    <script src="./src/model/Pocao.js"></script>
+    <script src="./src/data/equipamentosMock.js"></script>
+    <script src="./src/controller/equipamentosController.js"></script>
+</body>
+</html>

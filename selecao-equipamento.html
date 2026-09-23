@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Equipamentos - Jogo RPG</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Seleção de Equipamentos</h1>
+        <p>Escolha uma arma, uma armadura e uma poção compatíveis com seu herói.</p>
+
+        <section class="box">
+            <h2>Herói Selecionado</h2>
+            <pre id="saidaHeroi"></pre>
+        </section>
+
+        <section class="box">
+            <h2>Equipamentos compatíveis</h2>
+            <form id="formEquipamentos">
+                <div class="form-group">
+                    <label for="arma">Arma</label>
+                    <select id="arma" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="armadura">Armadura</label>
+                    <select id="armadura" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="pocao">Poção</label>
+                    <select id="pocao" required></select>
+                </div>
+
+                <button type="submit">Salvar Equipamentos</button>
+            </form>
+
+            <pre id="saidaEquipamentos">Nenhum equipamento selecionado.</pre>
+        </section>
+
+        <div class="acoes">
+            <a href="./herois.html"><button type="button">Voltar para Heróis</button></a>
+            <button id="btnBatalha" type="button" disabled>Continuar</button>
+        </div>
+    </main>
+
+    <script src="./src/model/Equipamento.js"></script>
+    <script src="./src/model/Arma.js"></script>
+    <script src="./src/model/Armadura.js"></script>
+    <script src="./src/model/Pocao.js"></script>
+    <script src="./src/data/equipamentosMock.js"></script>
+    <script src="./src/view/EquipamentoView.js"></script>
+    <script src="./src/controller/selecaoEquipamentoController.js"></script>
+</body>
+</html>
