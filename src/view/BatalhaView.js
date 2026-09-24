@@ -17,7 +17,7 @@ class BatalhaView {
             imagemVida = 'url(./assets/images/vidaComBarra-2.png)';
         } else if (damage <= step * 4) {
             imagemVida = 'url(./assets/images/vidaComBarra-3.png)';
-        } else if (heroi.vidaMaxima == heroi.vida) {
+        } else if (heroi.vidaMaxima === heroi.vida) {
             imagemVida = 'url(./assets/images/vidaComBarra-4.png)';
         } else {
             imagemVida = 'url(./assets/images/vidaCOm0.png)'; 
@@ -36,9 +36,10 @@ elemento.innerHTML = `
     <p><strong>Defesa:</strong> ${heroi.poderDefesa}</p>
     <p><strong>Habilidade:</strong> ${heroi.habilidade}</p>
     <p>
-        <strong>Vida:</strong>
         <span class="valor-vida">
-            <div id="barraVida" style="background-image: ${imagemVida};"></div>
+            <div id="barraVida" title="${heroi.vida}" style="background-image: ${imagemVida};"></div>
+            <br>
+            <p style="text-align: center;"><strong>Vida Atual: ${heroi.vida} </strong></p>
         </span>
     </p>
 `;

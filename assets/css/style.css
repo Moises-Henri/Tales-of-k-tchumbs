@@ -324,9 +324,7 @@ th {
     background-repeat: no-repeat;
 }
 
-#barraVida:hover{
-    background-color: #471010;
-}
+
 
 @media (max-width: 760px) {
     .arena-batalha {
