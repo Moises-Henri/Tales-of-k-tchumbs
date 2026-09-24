@@ -317,6 +317,13 @@ th {
     margin-top: 25px;
 }
 
+#barraVida{
+    width: 100%;
+    height: 100px;
+    background-image: url(../images/vidaCheia.png);
+    background-size: cover;
+}
+
 @media (max-width: 760px) {
     .arena-batalha {
         grid-template-columns: 1fr;

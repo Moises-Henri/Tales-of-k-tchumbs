@@ -10,18 +10,20 @@ class BatalhaView {
             <h3>${heroi.nome}</h3>
 
             <p><strong>Raça:</strong> ${heroi.raca}</p>
-            <p>
-                <strong>Vida:</strong>
-                <span class="valor-vida">
-                    ${heroi.vida}/${heroi.vidaMaxima}
-                </span>
-            </p>
             <p><strong>Stamina:</strong> ${heroi.stamina}</p>
             ${mana}
             <p><strong>Nível/XP:</strong> ${heroi.nivel}</p>
             <p><strong>Ataque:</strong> ${heroi.poderAtaque}</p>
             <p><strong>Defesa:</strong> ${heroi.poderDefesa}</p>
             <p><strong>Habilidade:</strong> ${heroi.habilidade}</p>
+            <p>
+            <strong>Vida:</strong>
+            <span class="valor-vida">
+                if((${heroi.vida}/${heroi.vidaMaxima}) == ${heroi.vidaMaxima}/5){
+                    <div id="barraVida"></div>
+                }
+            </span>
+        </p>
         `;
     }
 
