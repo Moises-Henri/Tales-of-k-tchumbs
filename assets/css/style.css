@@ -318,10 +318,14 @@ th {
 }
 
 #barraVida{
-    width: 100%;
-    height: 100px;
-    background-image: url(../images/vidaCheia.png);
-    background-size: cover;
+    width: 25vw;
+    height: 25vh;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#barraVida:hover{
+    background-color: #471010;
 }
 
 @media (max-width: 760px) {
