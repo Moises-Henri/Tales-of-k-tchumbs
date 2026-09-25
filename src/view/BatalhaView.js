@@ -5,23 +5,23 @@ class BatalhaView {
                 ? `<p><strong>Mana:</strong> ${heroi.mana}</p>`
                 : "";
 
-        const damage = heroi.vidaMaxima - heroi.vida;
+       
         const step = heroi.vidaMaxima / 5;
         let imagemVida = '';
 
-        if (damage <= step * 1) {
-            imagemVida = 'url(./assets/images/vidaCheia.png)';
-        } else if (damage <= step * 2) {
-            imagemVida = 'url(./assets/images/vidaComBarra-1.png)';
-        } else if (damage <= step * 3) {
-            imagemVida = 'url(./assets/images/vidaComBarra-2.png)';
-        } else if (damage <= step * 4) {
-            imagemVida = 'url(./assets/images/vidaComBarra-3.png)';
-        } else if (heroi.vidaMaxima === heroi.vida) {
+        if (heroi.vida === 0) {
+            imagemVida = 'url(./assets/images/vidaCom0.png)'; 
+        } else if (heroi.vida <= step * 1) {
             imagemVida = 'url(./assets/images/vidaComBarra-4.png)';
-        } else {
-            imagemVida = 'url(./assets/images/vidaCOm0.png)'; 
-        }       
+        } else if (heroi.vida <= step * 2) {
+            imagemVida = 'url(./assets/images/vidaComBarra-3.png)';
+        } else if (heroi.vida <= step * 3) {
+            imagemVida = 'url(./assets/images/vidaComBarra-2.png)';
+        } else if (heroi.vida <= step * 4) {
+            imagemVida = 'url(./assets/images/vidaComBarra-1.png)';
+        } else if (heroi.vida <= step * 5) {
+            imagemVida = 'url(./assets/images/vidaCheia.png)';
+        }
 
 
 elemento.innerHTML = `
@@ -37,7 +37,7 @@ elemento.innerHTML = `
     <p><strong>Habilidade:</strong> ${heroi.habilidade}</p>
     <p>
         <span class="valor-vida">
-            <div id="barraVida" title="${heroi.vida}" style="background-image: ${imagemVida};"></div>
+            <div id="barraVida" style="background-image: ${imagemVida};"></div>
             <br>
             <p style="text-align: center;"><strong>Vida Atual: ${heroi.vida} </strong></p>
         </span>

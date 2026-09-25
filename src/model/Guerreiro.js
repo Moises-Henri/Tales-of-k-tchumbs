@@ -6,25 +6,25 @@ class Guerreiro extends Heroi{
     }
 
     usarAtaqueComum(){
-        this.gastarStamina(5);
-        this.ganharExperiencia(5);
         return{
             tipo:"ataque",
             nome:"Ataque Comum/Base",
             dano: this.poderAtaque,
             defesa: 0,
+            custoStamina: 5,
+            experiencia: 5,
             mensagem: `${this.nome} usou Ataque Comum/Base.`
         };
     }
 
     usarDefesa(){
-        this.gastarStamina(5);
-        this.ganharExperiencia(5);
         return{
             tipo:"defesa",
             nome:"Defesa",
             dano: 0,
             defesa: this.poderDefesa,
+            custoStamina: 5,
+            experiencia: 5,
             mensagem: `${this.nome} se defendeu.`
         };
     }
@@ -52,8 +52,7 @@ class Guerreiro extends Heroi{
             };
         }
 
-        this.gastarStamina(15);
-        this.ganharExperiencia(5);
+        
         this.registrarUsoEspecial(roundAtual);
 
         return{
@@ -61,6 +60,8 @@ class Guerreiro extends Heroi{
             nome: "Combate Curta Distância",
             dano: this.poderAtaque + 3,
             defesa: 0,
+            custoStamina: 15,
+            experiencia: 5,
             mensagem: `${this.nome} usou Combate Curta Distância e adicionou + 3 de dano.`
         };
     }
@@ -88,8 +89,6 @@ class Guerreiro extends Heroi{
             };
         }
 
-        this.gastarStamina(8);
-        this.ganharExperiencia(5);
         this.registrarUsoEspecial(roundAtual);
 
         return{
@@ -97,6 +96,8 @@ class Guerreiro extends Heroi{
             nome: "Velocidade de Combate",
             dano: this.poderAtaque + 1,
             defesa: 0,
+            custoStamina: 8,
+            experiencia: 5,
             mensagem: `${this.nome} usou Velocidade de Combate e adicionou + 1 de dano.`
         };
     }

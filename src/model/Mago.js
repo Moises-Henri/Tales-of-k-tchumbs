@@ -14,27 +14,28 @@ class Mago extends Heroi{
     }
 
     usarAtaqueComum(){
-        this.gastarStamina(2);
-        this.gastarMana(5);
-        this.ganharExperiencia(15);
+        
         return{
             tipo:"ataque",
             nome:"Ataque Comum/Base",
             dano: this.poderAtaque,
             defesa: 0,
+            custoStamina: 2,
+            custoMana: 5,
+            experiencia: 15,
             mensagem: `${this.nome} usou Ataque Comum/Base.`
         };
     }
 
     usarDefesa(){
-        this.gastarStamina(2);
-        this.gastarMana(5);
-        this.ganharExperiencia(15);
         return{
             tipo:"defesa",
             nome:"Defesa",
             dano: 0,
             defesa: this.poderDefesa,
+            custoStamina: 2,
+            custoMana: 5,
+            experiencia: 15,
             mensagem: `${this.nome} se defendeu.`
         };
     }
@@ -69,9 +70,6 @@ class Mago extends Heroi{
             };
         }
 
-        this.gastarStamina(8);
-        this.gastarMana(20);
-        this.ganharExperiencia(15);
         this.registrarUsoEspecial(roundAtual);
 
         return{
@@ -79,6 +77,9 @@ class Mago extends Heroi{
             nome: "Feitiço de Dano",
             dano: this.poderAtaque + 3,
             defesa: 0,
+            custoStamina: 8,
+            custoMana: 20,
+            experiencia: 15,
             mensagem: `${this.nome} usou Feitiço de Dano e adicionou +3 de dano.`
         };
 
@@ -114,9 +115,6 @@ class Mago extends Heroi{
             };
         }
 
-        this.gastarStamina(8);
-        this.gastarMana(20);
-        this.ganharExperiencia(15);
         this.registrarUsoEspecial(roundAtual);
 
         return{
@@ -125,6 +123,9 @@ class Mago extends Heroi{
             dano: 0,
             defesa: 0,
             cura: 5,
+            custoStamina: 8,
+            custoMana: 20,
+            experiencia: 15,
             mensagem: `${this.nome} usou Feitiço de Cura e recuperou +5 de vida.`
         };
     }
@@ -159,9 +160,6 @@ class Mago extends Heroi{
             };
         }
 
-        this.gastarStamina(8);
-        this.gastarMana(20);
-        this.ganharExperiencia(15);
         this.registrarUsoEspecial(roundAtual);
 
         return{
@@ -169,6 +167,9 @@ class Mago extends Heroi{
             nome: "Feitiço de Defesa",
             dano: 0,
             defesa: this.poderDefesa + 4,
+            custoStamina: 8,
+            custoMana: 20,
+            experiencia: 15,
             mensagem: `${this.nome} usou Feitiço de Defesa e adicionou +4 de defesa.`
         };
     }

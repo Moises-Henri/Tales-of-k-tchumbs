@@ -56,6 +56,13 @@ class Batalha {
     processarAcao(atacante, defensor, acaoAtacante, acaoDefensor) {
         let log = "";
 
+        //Correção aqui
+        atacante.gastarStamina(acaoAtacante.custoStamina);
+        atacante.ganharExperiencia(acaoAtacante.experiencia);
+        if(acaoAtacante.custoMana){
+            atacante.gastarMana(acaoAtacante.custoMana);
+        }
+
         // Ações de cura não causam dano.
         if (acaoAtacante.cura) {
             atacante.recuperarVida(acaoAtacante.cura);
@@ -76,6 +83,7 @@ class Batalha {
             acaoAtacante,
             acaoDefensor
         );
+
 
         defensor.receberDano(dano);
 

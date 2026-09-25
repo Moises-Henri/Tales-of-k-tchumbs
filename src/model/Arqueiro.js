@@ -6,25 +6,25 @@ class Arqueiro extends Heroi{
     }
 
       usarAtaqueComum(){
-        this.gastarStamina(3);
-        this.ganharExperiencia(8);
         return{
             tipo:"ataque",
             nome:"Ataque Comum/Base",
             dano: this.poderAtaque,
             defesa: 0,
+            custoStamina: 3,
+            experiencia: 8,
             mensagem: `${this.nome} usou Ataque Comum/Base.`
         };
     }
 
      usarDefesa(){
-        this.gastarStamina(3);
-        this.ganharExperiencia(8);
         return{
             tipo:"defesa",
             nome:"Defesa",
             dano: 0,
             defesa: this.poderDefesa,
+            custoStamina: 3,
+            experiencia: 8,
             mensagem: `${this.nome} se defendeu.`
         };
     }
@@ -52,8 +52,6 @@ class Arqueiro extends Heroi{
             };
         }
 
-        this.gastarStamina(12);
-        this.ganharExperiencia(8);
         this.registrarUsoEspecial(roundAtual);
 
         return{
@@ -61,6 +59,8 @@ class Arqueiro extends Heroi{
             nome: "Combate Longa Distância",
             dano: this.poderAtaque + 2,
             defesa: this.poderDefesa + 2,
+            custoStamina: 12,
+            experiencia: 8,
             mensagem: `${this.nome} usou Combate Longa Distância: +2 dano e +2 defesa.`
         };
     }
