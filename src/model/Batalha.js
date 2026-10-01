@@ -5,10 +5,23 @@ class Batalha {
         this.round = 1;
 
         // Define aleatoriamente quem executará a primeira ação.
-        this.primeiroMovimento =
-            Math.random() < 0.5 ? "jogador" : "adversario";
-
+        this.primeiroMovimento = Math.random() < 0.5 ? "jogador" : "adversario";
         this.finalizada = false;
+        this.estatistica = {
+            jogador: this.criarEstatisticas(),
+            adversario: this.criarEstatisticas()
+        };
+    }
+
+    criarEstatisticas() {
+        return {
+            ataques: 0, 
+            defesas: 0, 
+            especiais: 0, 
+            pocoes: 0, 
+            danoCausado: 0, 
+            danoRecebido: 0 
+        };
     }
 
     iniciar() {
@@ -33,30 +46,34 @@ class Batalha {
 
     normalizarAcao(heroi, acao) {
         if (!acao || acao.erro) {
-            const mensagemErro =
-                acao?.mensagem ||
-                `${heroi.nome} não conseguiu executar a ação escolhida.`;
-
-            const ataqueComum = heroi.usarAtaqueComum();
-
             return {
-                acao: ataqueComum,
-                aviso:
-                    `⚠️ ${mensagemErro}\n` +
-                    `Ação substituída por Ataque Comum.`
+                acao: this.criarAcaoPassarTurno(heroi),
+                aviso: `⚠️ ${acao?.mensagem || "Ação inválida."}`
             };
         }
+        return { acao, aviso: null};
+    }
 
-        return {
-            acao,
-            aviso: null
-        };
+    podeExecutarAcao(heroi, acao) {
+        const stamina = acao.custoStamina || 0;
+        const mana = acao.custoMana || 0;
+        if(heroi.stamina < stamina) return false;
+        if (mana > 0 && (heroi.name === undefined || heroi.mana < mana)) return false;
+        return true;
+    }
+
+    aplicarCustos(heroi, acao){
+        heroi.gastarStamina(acao.custoStamina || 0);
+        if((acao.custoMana || 0) > 0 && typeof heroi.gastarMana === "function") {
+            heroi.gastarMana(acao.custoMana);
+        }
+        heroi.ganharExperiencia(acao.experiencia || 0);
+        if (acao.especial) heroi.registrarUsoEspecial(this.round);
     }
 
     processarAcao(atacante, defensor, acaoAtacante, acaoDefensor) {
         let log = "";
 
-        //Correção aqui
         atacante.gastarStamina(acaoAtacante.custoStamina);
         atacante.ganharExperiencia(acaoAtacante.experiencia);
         if(acaoAtacante.custoMana){

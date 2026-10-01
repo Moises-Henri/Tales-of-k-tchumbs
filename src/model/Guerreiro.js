@@ -13,6 +13,7 @@ class Guerreiro extends Heroi{
             defesa: 0,
             custoStamina: 5,
             experiencia: 5,
+            custoMana: 0,
             mensagem: `${this.nome} usou Ataque Comum/Base.`
         };
     }
@@ -25,6 +26,7 @@ class Guerreiro extends Heroi{
             defesa: this.poderDefesa,
             custoStamina: 5,
             experiencia: 5,
+            custoMana: 0,
             mensagem: `${this.nome} se defendeu.`
         };
     }
@@ -62,6 +64,7 @@ class Guerreiro extends Heroi{
             defesa: 0,
             custoStamina: 15,
             experiencia: 5,
+            custoMana: 0,
             mensagem: `${this.nome} usou Combate Curta Distância e adicionou + 3 de dano.`
         };
     }
@@ -98,6 +101,7 @@ class Guerreiro extends Heroi{
             defesa: 0,
             custoStamina: 8,
             experiencia: 5,
+            custoMana: 0,
             mensagem: `${this.nome} usou Velocidade de Combate e adicionou + 1 de dano.`
         };
     }

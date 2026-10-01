@@ -13,6 +13,7 @@ class Arqueiro extends Heroi{
             defesa: 0,
             custoStamina: 3,
             experiencia: 8,
+            custoMana: 0,
             mensagem: `${this.nome} usou Ataque Comum/Base.`
         };
     }
@@ -25,6 +26,7 @@ class Arqueiro extends Heroi{
             defesa: this.poderDefesa,
             custoStamina: 3,
             experiencia: 8,
+            custoMana: 0,
             mensagem: `${this.nome} se defendeu.`
         };
     }
@@ -61,6 +63,7 @@ class Arqueiro extends Heroi{
             defesa: this.poderDefesa + 2,
             custoStamina: 12,
             experiencia: 8,
+            custoMana: 0,
             mensagem: `${this.nome} usou Combate Longa Distância: +2 dano e +2 defesa.`
         };
     }
