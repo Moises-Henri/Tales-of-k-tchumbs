@@ -59,9 +59,8 @@ elemento.innerHTML = `
         );
     }
 
-    static atualizarRound(round) {
-        document.getElementById("roundAtual").textContent = round;
-    }
+    static atualizarRound(round) { document.getElementById("roundAtual").textContent = round;}
+    static atualizarTempoTurno(segundos) { document.getElementById("tempoTurno").textContent = segundos}
 
     static adicionarLog(elemento, mensagem) {
         elemento.textContent += `${mensagem}\n`;

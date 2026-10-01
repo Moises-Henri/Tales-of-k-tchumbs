@@ -7,7 +7,7 @@ class Batalha {
         // Define aleatoriamente quem executará a primeira ação.
         this.primeiroMovimento = Math.random() < 0.5 ? "jogador" : "adversario";
         this.finalizada = false;
-        this.estatistica = {
+        this.estatisticas = {
             jogador: this.criarEstatisticas(),
             adversario: this.criarEstatisticas()
         };
@@ -71,43 +71,49 @@ class Batalha {
         if (acao.especial) heroi.registrarUsoEspecial(this.round);
     }
 
+    calcularDano(acaoAtacante, acaoDefensor){
+        return Math.max(0, (acaoAtacante.dano || 0) - (acaoDefensor.defesa || 0));
+    }
+
+    obterChaveEstatistica(heroi){
+        return heroi === this.heroiJogador ? "jogador" : "adversario";
+    }
+
+    registrarAcao(heroi, acao) {
+        const stats = this.estatisticas[this.obterChaveEstatistica(heroi)];
+        if (acao.tipo === "ataque") stats.ataques++;
+        if (acao.tipo === "defesa") stats.defesas++;
+        if (acao.especial) stats.especiais++;
+        if (acao.tipo === "pocao") stats.pocoes++;
+    }
+
     processarAcao(atacante, defensor, acaoAtacante, acaoDefensor) {
-        let log = "";
+       if (!this.podeExecutarAcao(atacante, acaoAtacante)){
+        return `⚠️ ${atacante.nome} não possui recursos suficientes. A ação foi cancelada.\n`;
+       }
 
-        atacante.gastarStamina(acaoAtacante.custoStamina);
-        atacante.ganharExperiencia(acaoAtacante.experiencia);
-        if(acaoAtacante.custoMana){
-            atacante.gastarMana(acaoAtacante.custoMana);
-        }
+       this.aplicarCustos(atacante, acaoAtacante);
+       this.registrarAcao(atacante, acaoAtacante);
 
-        // Ações de cura não causam dano.
-        if (acaoAtacante.cura) {
+       if (acaoAtacante.tipo === "passar") return `${acaoAtacante.mensagem}\n`;
+
+       if (acaoAtacante.cura) {
             atacante.recuperarVida(acaoAtacante.cura);
-
-            log += `${acaoAtacante.mensagem}\n`;
-            log += `❤️ ${atacante.nome} recuperou ${acaoAtacante.cura} de vida.\n`;
-
-            return log;
+            return `${acaoAtacante.mensagem}\n❤️ ${atacante.nome} recuperou ${acaoAtacante.cura} de vida \n`;
         }
 
-        // Defesa comum ou especial não causa dano diretamente.
-        if ((acaoAtacante.dano || 0) === 0) {
-            log += `${acaoAtacante.mensagem}\n`;
-            return log;
-        }
+        if ((acaoAtacante.dano || 0) === 0) return `${acaoAtacante.mensagem}\n`;
 
         const dano = this.calcularDano(
             acaoAtacante,
             acaoDefensor
         );
-
-
         defensor.receberDano(dano);
 
-        log += `${acaoAtacante.mensagem}\n`;
-        log += `💥 Dano aplicado em ${defensor.nome}: ${dano}.\n`;
+        const statsAtacante = this.estatisticas[this.obterChaveEstatistica(atacante)];
+        const statsDefensor = this.estatisticas[this.obterChaveEstatistica(defensor)];
 
-        return log;
+        return `${acaoAtacante.mensagem}\n💥 Dabo aplicado em ${defensor.nome}: ${dano}.\n`;
     }
 
     executarRound(acaoJogador, acaoAdversario) {
@@ -117,74 +123,46 @@ class Batalha {
 
         let log = `\n=== ROUND ${this.round} ===\n`;
 
-        const jogadorNormalizado = this.normalizarAcao(
+        const j = this.normalizarAcao(
             this.heroiJogador,
             acaoJogador
         );
 
-        const adversarioNormalizado = this.normalizarAcao(
+        const a = this.normalizarAcao(
             this.heroiAdversario,
             acaoAdversario
         );
 
-        acaoJogador = jogadorNormalizado.acao;
-        acaoAdversario = adversarioNormalizado.acao;
+        acaoJogador = j.acao;
+        acaoAdversario = a.acao;
 
-        if (jogadorNormalizado.aviso) {
-            log += `${jogadorNormalizado.aviso}\n`;
-        }
-
-        if (adversarioNormalizado.aviso) {
-            log += `${adversarioNormalizado.aviso}\n`;
-        }
+        if (j.aviso) log += `${j.aviso}\n`;
+        if (a.aviso) log += `${a.aviso}\n`; 
 
         const ordem =
             this.primeiroMovimento === "jogador"
                 ? [
-                    {
-                        atacante: this.heroiJogador,
-                        defensor: this.heroiAdversario,
-                        acaoAtacante: acaoJogador,
-                        acaoDefensor: acaoAdversario
-                    },
-                    {
-                        atacante: this.heroiAdversario,
-                        defensor: this.heroiJogador,
-                        acaoAtacante: acaoAdversario,
-                        acaoDefensor: acaoJogador
-                    }
+                    { atacante: this.heroiJogador, defensor: this.heroiAdversario, acao:
+                    acaoJogador, defesa: acaoAdversario},
+                    { atacante: this.heroiAdversario, defensor: this.heroiJogador, acao:
+                    acaoAdversario, defesa: acaoJogador}
                 ]
-                : [
-                    {
-                        atacante: this.heroiAdversario,
-                        defensor: this.heroiJogador,
-                        acaoAtacante: acaoAdversario,
-                        acaoDefensor: acaoJogador
-                    },
-                    {
-                        atacante: this.heroiJogador,
-                        defensor: this.heroiAdversario,
-                        acaoAtacante: acaoJogador,
-                        acaoDefensor: acaoAdversario
-                    }
+                :   [
+                    { atacante: this.heroiAdversario, defensor: this.heroiJogador, acao:
+                    acaoAdversario, defesa: acaoJogador},
+                    { atacante: this.heroiJogador, defensor: this.heroiAdversario, acao:
+                    acaoJogador, defesa: acaoAdversario}
                 ];
-
+                
         for (const movimento of ordem) {
-            if (!movimento.atacante.estaVivo()) {
-                continue;
-            }
-
-            if (!movimento.defensor.estaVivo()) {
-                break;
-            }
-
+            if (!movimento.atacante.estaVivo()) continue; 
+            if (!movimento.defensor.estaVivo()) break;
             log += this.processarAcao(
                 movimento.atacante,
                 movimento.defensor,
-                movimento.acaoAtacante,
-                movimento.acaoDefensor
+                movimento.acao,
+                movimento.defesa
             );
-
             if (!movimento.defensor.estaVivo()) {
                 log += `💀 ${movimento.defensor.nome} foi derrotado!\n`;
                 break;
@@ -192,67 +170,46 @@ class Batalha {
         }
 
         log += this.gerarStatus();
-
         const vencedor = this.verificarVencedor();
-
         if (vencedor) {
             this.finalizada = true;
+            this.motivoFinalizacao = "vida";
             log += `\n🏆 Resultado: ${vencedor}`;
+        } else {
+            this.primeiroMovimento = this.primeiroMovimento === "jogador" ? "adversario" : "jogador";
+            this.round++
         }
-
-        // No próximo round, o outro personagem executa primeiro.
-        this.primeiroMovimento =
-            this.primeiroMovimento === "jogador"
-                ? "adversario"
-                : "jogador";
-
-        this.round++;
-
         return log;
+    }
+
+    usarPocao(heroi, pocao) {
+        if (this.finalizada) return { erro: true, mensagem: "A batalha ja terminou." };
+        const resultado = pocao.usar(heroi);
+        if(!resultado.erro){
+            this.estatisticas[this.obterChaveEstatistica(heroi)].pocoes++;
+        }
+        return resultado;
+    }
+
+    finalizarPorTempo() {
+        if (this.finalizada) return this.verificarVencedor();
+        this.finalizada = true;
+        this.motivoFinalizacao = "tempo";
+        if (this.heroiJogador.vida > this.heroiAdversario.vida) return `${this.heroiJogador.nome} venceu`;
+        if (this.heroiAdversario.vida > this.heroiJogador.vida) return `${this.heroiAdversario.nome} venceu`;
+        return "Empate";
     }
 
     gerarStatus() {
-        let log =
-            `\n❤️ ${this.heroiJogador.nome}: ` +
-            `${this.heroiJogador.vida}/${this.heroiJogador.vidaMaxima} vida | ` +
-            `${this.heroiJogador.stamina} stamina`;
-
-        if (this.heroiJogador.mana !== undefined) {
-            log += ` | ${this.heroiJogador.mana} mana`;
-        }
-
-        log += ` | ${this.heroiJogador.nivel} XP`;
-
-        log +=
-            `\n❤️ ${this.heroiAdversario.nome}: ` +
-            `${this.heroiAdversario.vida}/${this.heroiAdversario.vidaMaxima} vida | ` +
-            `${this.heroiAdversario.stamina} stamina`;
-
-        if (this.heroiAdversario.mana !== undefined) {
-            log += ` | ${this.heroiAdversario.mana} mana`;
-        }
-
-        log += ` | ${this.heroiAdversario.nivel} XP\n`;
-
-        return log;
+      const status = (h) => `${h.nome}: ${h.vida}/${h.vidaMaxima} vida | ${h.stamina}
+      stamina${h.mana !== undefined ? ` | ${h.mana} mana` : ""} | ${h.nivel} XP`;
+      return `\n❤️ ${status(this.heroiJogador)}\n❤️ ${status(this.heroiAdversario)}\n`;
     }
 
     verificarVencedor() {
-        if (
-            this.heroiJogador.vida <= 0 &&
-            this.heroiAdversario.vida <= 0
-        ) {
-            return "Empate";
-        }
-
-        if (this.heroiJogador.vida <= 0) {
-            return `${this.heroiAdversario.nome} venceu`;
-        }
-
-        if (this.heroiAdversario.vida <= 0) {
-            return `${this.heroiJogador.nome} venceu`;
-        }
-
-        return null;
+      if (this.heroiJogador.vida <= 0 && this.heroiAdversario.vida <= 0) return "Empate";
+      if (this.heroiJogador.vida <= 0) return `${this.heroiAdversario.nome} venceu`;
+      if (this.heroiAdversario.vida <= 0) return `${this.heroiJogador.nome} venceu`;
+      return null;
     }
 }
