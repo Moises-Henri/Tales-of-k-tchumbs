@@ -146,48 +146,47 @@ function configurarEventos(batalha, pocao) {
 // ======================================================
 
 function executarJogada(batalha, acaoJogador) {
-    if (batalha.finalizada) {
+    if (batalha.finalizada || jogadaEmProcessamento) return; 
+
+    const acaoAdversario = sortearAcaoAdversario(batalha.heroiAdversario, batalha.round);
+
+    const logRound = batalha.executarRound(acaoJogador,acaoAdversario);
+
+    BatalhaView.adicionarLog(logBatalha,logRound);
+    atualizarTelasAposRound(batalha);
+
+    const vencedor = batalha.verificarVencedor();
+    if (vencedor || batalha.finalizada){
+        finalizarBatalha(batalha,vencedor || batalha.finalizarPorTempo());
         return;
     }
 
-    /*
-     * O adversário escolhe automaticamente
-     * uma ação a cada round.
-     */
-    const acaoAdversario = sortearAcaoAdversario(
-        batalha.heroiAdversario,
-        batalha.round
-    );
-
-    const logRound = batalha.executarRound(
-        acaoJogador,
-        acaoAdversario
-    );
-
-    BatalhaView.adicionarLog(
-        logBatalha,
-        logRound
-    );
-
-    BatalhaView.atualizarPersonagens(
-        batalha.heroiJogador,
-        batalha.heroiAdversario
-    );
-
-    BatalhaView.atualizarRound(
-        batalha.round
-    );
-
-    const vencedor = batalha.verificarVencedor();
-
-    if (vencedor) {
-        finalizarBatalha(
-            batalha,
-            vencedor
-        );
-    }
+    jogadaEmProcessamento = false;
+    BatalhaView.desbloquearAcoes(document.getElementById("btnPocao").textContent.includes("utilizada"));
+    reiniciarTemporizadorTurno(batalha);
 }
 
+function atualizarTelaAposRound(batalha){
+    BatalhaView.atualizarPersonagens(batalha.heroiJogador, batalha.heroiAdversario);
+    BatalhaView.atualizarRound(batalha.round);
+}
+
+function listarEspeciais(heroi) {
+    if (heroi instanceof Guerreiro) return [
+        { valor: "curta", nome: "Combate Curta Distância"},
+        { valor: "velocidade", nome: "Velocidade de combate"}
+    ];
+    if (heroi instanceof Arqueiro) return [
+        { valor: "longa", nome: "Combate Longa Distância"},
+        { valor: "velocidade", nome: "Velocidade de combate"}
+    ];
+    if (heroi instanceof Mago) return [
+        { valor: "dano", nome: "Feitiço de Dano"},
+        { valor: "cura", nome: "Feitiço de Cura"},
+        { valor: "defesa", nome: "Feitiço de Defesa"}
+    ];
+    return [];
+}
 
 // ======================================================
 // 5. HABILIDADE ESPECIAL DO JOGADOR
@@ -203,21 +202,17 @@ function criarAcaoEspecial(heroi, roundAtual) {
      */
 
     if (heroi instanceof Guerreiro) {
-        return heroi.combateCurtaDistancia(
-            roundAtual
-        );
+        return escolha === "velocidade" ? heroi.velocidadeCombate(roundAtual) : heroi.combateCurtaDistancia(roundAtual);
     }
 
     if (heroi instanceof Arqueiro) {
-        return heroi.combateLongaDistancia(
-            roundAtual
-        );
+        return escolha === "velocidade" ? heroi.velocidadeCombate(roundAtual) : heroi.combateLongaDistancia(roundAtual);    
     }
 
     if (heroi instanceof Mago) {
-        return heroi.lancarFeiticoDano(
-            roundAtual
-        );
+        if (escolha === "cura") return heroi.lancarFeiticoCura(roundAtual);
+        if (escolha === "defesa") return heroi.lancarFeiticoDefesa(roundAtual);
+        return heroi.lancarFeiticoDano(round);
     }
 
     return {
@@ -232,30 +227,30 @@ function criarAcaoEspecial(heroi, roundAtual) {
 // 6. AÇÃO AUTOMÁTICA DO ADVERSÁRIO
 // ======================================================
 
-function sortearAcaoAdversario(
-    adversario,
-    roundAtual
-) {
-    const numeroSorteado = Math.floor(
-        Math.random() * 3
-    );
+function sortearAcaoAdversario( adversario,roundAtual) {
+    const numero = Math.floor(Math.random() * 3 );
+    if (numero === 0) return adversario.usarAtaqueComum();
+    if (numero === 1) return adversario.usarDefesa();
 
-    switch (numeroSorteado) {
-        case 0:
-            return adversario.usarAtaqueComum();
+    const especiais = listarEspeciais(adversario);
+    const especial = especiais[Math.floor(Math.random() * especiais.length)];
+    return criarAcaoEspecial(adversario, roundAtual, especial?.valor);
+}
 
-        case 1:
-            return adversario.usarDefesa();
-
-        case 2:
-            return criarAcaoEspecial(
-                adversario,
-                roundAtual
-            );
-
-        default:
-            return adversario.usarAtaqueComum();
-    }
+function reiniciarTemporizadorTurno(batalha) {
+    clearInterval(intervaloTurno);
+    tempoTurno = TEMPO_POR_TURNO;
+    BatalhaView.atualizarTempoTurno(tempoTurno);
+    
+    intervaloTurno = setInterval(() => {
+        tempoTurno--;
+        BatalhaView.atualizarTempoTotal(tempoTotal);
+        if(tempoTurno <= 0){
+            clearInterval(intervaloTurno);
+            BatalhaView.adicionarLog(logBatalha, " Tempo do jogador esgotado.");
+            executarJogada(batalha, batalha.criarAcaoPassarTurno(batalha.heroiJogador));
+        }
+    }, 1000);
 }
 
 
