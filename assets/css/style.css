@@ -359,3 +359,43 @@ th {
         text-align: center;
     }
 }
+
+/* ===========================================================
+   ETAPA 15 - TEMPO, ESPECIAIS, POCAO E RESULTADO 
+   =========================================================== */
+
+.painel-tempo{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 20px 0;
+}
+.painel-tempo > div {
+    padding: 10px 16px;
+    background-color: #2c2c44;
+    border: 1px solid #f5c542;
+    border-radius: 8px;
+    color: #f5c542;
+}
+.selecao-especial {
+    margin-bottom: 16px;
+}
+.selecao-especial label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+.selecao-especial select {
+    min-width: 260px;
+    padding: 10px;
+    border-radius: 8px;
+}
+.resultado-container {
+    max-width: 760px;
+}
+#resumoResultado h2,
+#resumoResultado h3{
+    color: #f5c542;
+    margin: 12px 0;
+}

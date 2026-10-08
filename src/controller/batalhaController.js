@@ -61,7 +61,7 @@ function iniciarBatalha() {
 
     if (!heroiJogador) {
         alert("Não foi possível reconstruir o herói");
-        windows.location.href = "./herois.html";
+        window.location.href = "./herois.html";
         return;
     }
 
@@ -153,7 +153,7 @@ function executarJogada(batalha, acaoJogador) {
     const logRound = batalha.executarRound(acaoJogador,acaoAdversario);
 
     BatalhaView.adicionarLog(logBatalha,logRound);
-    atualizarTelasAposRound(batalha);
+    atualizarTelaAposRound(batalha);
 
     const vencedor = batalha.verificarVencedor();
     if (vencedor || batalha.finalizada){
@@ -192,7 +192,7 @@ function listarEspeciais(heroi) {
 // 5. HABILIDADE ESPECIAL DO JOGADOR
 // ======================================================
 
-function criarAcaoEspecial(heroi, roundAtual) {
+function criarAcaoEspecial(heroi, roundAtual, escolha) {
     /*
      * Nesta etapa utilizaremos uma habilidade
      * especial principal para cada classe.
@@ -212,7 +212,7 @@ function criarAcaoEspecial(heroi, roundAtual) {
     if (heroi instanceof Mago) {
         if (escolha === "cura") return heroi.lancarFeiticoCura(roundAtual);
         if (escolha === "defesa") return heroi.lancarFeiticoDefesa(roundAtual);
-        return heroi.lancarFeiticoDano(round);
+        return heroi.lancarFeiticoDano(roundAtual);
     }
 
     return {
@@ -244,11 +244,26 @@ function reiniciarTemporizadorTurno(batalha) {
     
     intervaloTurno = setInterval(() => {
         tempoTurno--;
-        BatalhaView.atualizarTempoTotal(tempoTotal);
+        BatalhaView.atualizarTempoTurno(tempoTurno);
         if(tempoTurno <= 0){
             clearInterval(intervaloTurno);
             BatalhaView.adicionarLog(logBatalha, " Tempo do jogador esgotado.");
             executarJogada(batalha, batalha.criarAcaoPassarTurno(batalha.heroiJogador));
+        }
+    }, 1000);
+}
+
+function iniciarTemporizadorTotal(batalha){
+    BatalhaView.atualizarTempoTotal(tempoTotal);    
+    intervaloTotal = setInterval(() => {
+        tempoTotal--;
+        BatalhaView.atualizarTempoTotal(tempoTotal);
+        if (tempoTotal <= 0 ){
+            clearInterval(intervaloTotal);
+            clearInterval(intervaloTurno);
+            const vencedor = batalha.finalizarPorTempo();
+            BatalhaView.adicionarLog(logBatalha, "⏱️ o tempo total da batalha terminou. Vence quem possui mais vida restante");
+            finalizarBatalha(batalha, vencedor);
         }
     }, 1000);
 }
@@ -258,24 +273,18 @@ function reiniciarTemporizadorTurno(batalha) {
 // 7. FINALIZAÇÃO
 // ======================================================
 
-function finalizarBatalha(
-    batalha,
-    vencedor
-) {
+function finalizarBatalha(batalha,vencedor) {
+    clearInterval(intervaloTurno);
+    clearInterval(intervaloTotal);
     BatalhaView.bloquearAcoes();
 
-    const jogadorVenceu =
-        batalha.heroiJogador.estaVivo() &&
-        !batalha.heroiAdversario.estaVivo();
+    const jogadorVenceu = vencedor !== "Empate" && vencedor.startsWith(batalha.heroiJogador.nome);
+    let mensagem = "🤝 A batalha terminou empatada.";
 
-    let mensagem;
-
-    if (vencedor === "Empate") {
-        mensagem = "🤝 A batalha terminou empatada.";
-    } else if (jogadorVenceu) {
+    if (jogadorVenceu) {
         mensagem =
             `🏆 Vitória! ${batalha.heroiJogador.nome} venceu a batalha.`;
-    } else {
+    } else if (vencedor !== "Empate") {
         mensagem =
             `💀 Derrota! ${batalha.heroiAdversario.nome} venceu a batalha.`;
     }
@@ -284,6 +293,7 @@ function finalizarBatalha(
         resultadoBatalha,
         mensagem
     );
+    linkResultado.classList.remove("oculto");
 
     /*
      * Guarda um resumo simples para futuras etapas.
@@ -292,12 +302,14 @@ function finalizarBatalha(
         "resultadoBatalha",
         JSON.stringify({
             vencedor,
-            heroiJogador:
-                batalha.heroiJogador.nome,
-            heroiAdversario:
-                batalha.heroiAdversario.nome,
-            roundFinal:
-                batalha.round - 1
-        })
-    );
+            mensagem,
+            motivo: batalha.motivoFinalizacao,
+            heroiJogador: batalha.heroiJogador.nome,
+            heroiAdversario: batalha.heroiAdversario.nome,
+            vidaJogador: batalha.heroiJogador.vida,
+            vidaAdversario: batalha.heroiAdversario.vida,
+            roundFinal: batalha.round,
+            tempoRestante: tempoTotal,
+            estatisticas: batalha.estatisticas
+        }));
 }

@@ -25,8 +25,7 @@ class BatalhaView {
 
 
 elemento.innerHTML = `
-    <h2>${titulo}</h2>
-    <h3>${heroi.nome}</h3>
+    <h2>${titulo}</h2><h3>${heroi.nome}</h3>
 
     <p><strong>Raça:</strong> ${heroi.raca}</p>
     <p><strong>Stamina:</strong> ${heroi.stamina}</p>
@@ -39,7 +38,7 @@ elemento.innerHTML = `
         <span class="valor-vida">
             <div id="barraVida" style="background-image: ${imagemVida};"></div>
             <br>
-            <p style="text-align: center;"><strong>Vida Atual: ${heroi.vida} </strong></p>
+            <p style="text-align: center;"><strong>Vida Atual: ${heroi.vida}/${heroi.vidaMaxima} </strong></p>
         </span>
     </p>
 `;

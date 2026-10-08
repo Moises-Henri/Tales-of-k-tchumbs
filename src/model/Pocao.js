@@ -29,7 +29,7 @@ class Pocao extends Equipamento{
 
         if(this.tipoPocao === "Cura") {
             const vidaAntes = heroi.vida;
-            heroi.recuperar(10);
+            recuperarVida();
             const recuperado = heroi.vida - vidaAntes;
             this.consumida = true;
             return { tipo: "pocao", mensagem: `${heroi.nome} utilizou ${this.nome} e recuperou ${recuperado} de vida.`};
