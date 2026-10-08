@@ -10,96 +10,50 @@
 
     <title>Batalha - Jogo RPG</title>
 
-    <link
-        rel="stylesheet"
-        href="./assets/css/style.css"
-    >
+    <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 
 <body>
     <main class="container batalha-container">
-        <h1>⚔️ Batalha RPG</h1>
+        <h1>⚔️ Batalha RPG - Etapa 15</h1>
+        <p> Escolha sua ação antes que o tempo do turno termine. </p>
 
-        <p>
-            Escolha uma ação para executar em cada round.
-        </p>
-
-        <section class="painel-round">
-            <strong>Round atual:</strong>
-            <span id="roundAtual">1</span>
+        <section class="painel-tempo">
+            <div><strong>Round:</strong> <span id="roundAtual">1</span></div>
+            <div><strong>Tempo do Turno:</strong> <span id="tempoTurno">10</span></div>
+            <div><strong>Tempo da Batalha:</strong> <span id="tempoTotal">2:00</span></div>
         </section>
 
         <section class="arena-batalha">
-            <article
-                id="cardJogador"
-                class="card-batalha"
-            ></article>
-
-            <div class="versus">
-                VS
-            </div>
-
-            <article
-                id="cardAdversario"
-                class="card-batalha"
-            ></article>
+            <article id="cardJogador" class="card-batalha"></article>
+            <div class="versus">VS</div>
+            <article id="cardAdversario" class="card-batalha"></article>
         </section>
 
         <section class="box">
             <h2>Escolha sua ação</h2>
-
+            <div class="selecao-especial">
+                <label for="selectEspecial">Habilidade Especial:</label>
+                <select id="selectEspecial"></select>
+            </div>
             <div class="acoes-batalha">
-                <button
-                    id="btnAtaque"
-                    class="btn-acao"
-                    type="button"
-                >
-                    ⚔️ Ataque
-                </button>
-
-                <button
-                    id="btnEspecial"
-                    class="btn-acao"
-                    type="button"
-                >
-                    ✨ Ataque Especial
-                </button>
-
-                <button
-                    id="btnDefesa"
-                    class="btn-acao"
-                    type="button"
-                >
-                    🛡️ Defesa
-                </button>
+                <button id="btnAtaque" class="btn-acao" type="button">⚔️ Ataque</button>
+                <button id="btnEspecial" class="btn-acao" type="button">✨ Usar Especial</button>
+                <button id="btnDefesa" class="btn-acao" type="button">🛡️ Defesa</button>
+                <button id="btnPocao" class="btn-acao" type="button">🧪 Usar <span id="nomePocao">Poção</span></button>
             </div>
         </section>
 
         <section class="box">
-            <h2>Histórico da Batalha</h2>
-
-            <div id="cenarioBatalha"></div>
-
+            <h2>Histórico de Batalha</h2>
             <pre id="logBatalha"></pre>
         </section>
 
-        <section
-            id="resultadoBatalha"
-            class="resultado-batalha oculto"
-        ></section>
-
+        <section id="resultadoBatalha" class="resultado-batalha oculto"></section>
         <div class="acoes">
-            <a href="./herois.html">
-                <button type="button">
-                    Reiniciar seleção
-                </button>
-            </a>
-
-            <a href="./index.html">
-                <button type="button">
-                    Sair
-                </button>
-            </a>
+            <a id="linkResultado" class="oculto" href="./resultado.html"><button type="button">Ver Resultado Completo</button></a>
+            <a href="./herois.html"><button type="button">Reiniciar Seleção</button></a>
+            <a href="./index.html">Sair</a>
         </div>
     </main>
 

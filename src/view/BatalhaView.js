@@ -61,10 +61,32 @@ elemento.innerHTML = `
 
     static atualizarRound(round) { document.getElementById("roundAtual").textContent = round;}
     static atualizarTempoTurno(segundos) { document.getElementById("tempoTurno").textContent = segundos}
+    static atualizarTempoTotal(segundos){
+        const minutos = Math.floor(segundos / 60);
+        const resto = segundos % 60;
+        document.getElementById("tempoTotal").textContent = `${minutos}:${String(resto).padStart(2, "0")}`;
+    }
 
     static adicionarLog(elemento, mensagem) {
         elemento.textContent += `${mensagem}\n`;
         elemento.scrollTop = elemento.scrollHeight;
+    }
+
+    static preencherEspeciais(select, especiais){
+        select.innerHTML = "";
+        especiais.forEach((especial) => {
+            const option = document.createElement("option");
+            option.value = especial.valor;
+            option.textContent = especial.nome;
+            select.appendChild(option);
+        });
+    }
+
+    static exibirPocao(nome) { document.getElementById("nomePocao").textContent = nome; }
+    static marcarPocaoUsada(){
+        const btn = document.getElementById("btnPocao");
+        btn.disabled = true;
+        btn.textContent = "🧪 Poção utilizada";
     }
 
     static exibirResultado(elemento, resultado) {
@@ -73,10 +95,13 @@ elemento.innerHTML = `
     }
 
     static bloquearAcoes() {
-        document
-            .querySelectorAll(".btn-acao")
-            .forEach((botao) => {
-                botao.disabled = true;
-            });
+        document.querySelectorAll(".btn-acao").forEach((botao) => { botao.disabled = true;});
+        document.getElementById("selectEspecial").disabled = true;
+    }
+
+    static desbloquearAcoes(pocaoConsumida) {
+        document.querySelectorAll(".btn-acao").forEach((botao) => botao.disabled = false);
+        if (pocaoConsumida) document.getElementById("btnPocao").disabled = true;
+        document.getElementById("selectEspecial").disabled = false;
     }
 }

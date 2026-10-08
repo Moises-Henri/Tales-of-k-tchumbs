@@ -15,12 +15,18 @@
 // 1. ELEMENTOS DA TELA
 // ======================================================
 
+const TEMPO_POR_TURNO = 10;
+const TEMPO_TOTAL_BATALHA = 120;
+
 const btnAtaque = document.getElementById("btnAtaque");
 const btnEspecial = document.getElementById("btnEspecial");
 const btnDefesa = document.getElementById("btnDefesa");
+const btnPocao = document.getElementById("btnPocao");
+const selectEspecial = document.getElementById("selectEspecial");
 
 const logBatalha = document.getElementById("logBatalha");
 const resultadoBatalha = document.getElementById("resultadoBatalha");
+const linkResultado = document.getElementById("linkResultado");
 
 
 // ======================================================
@@ -28,9 +34,13 @@ const resultadoBatalha = document.getElementById("resultadoBatalha");
 // ======================================================
 
 const heroiSalvo = localStorage.getItem("heroiSelecionado");
-const equipamentosSalvos = localStorage.getItem(
-    "equipamentosSelecionados"
-);
+const equipamentosSalvos = localStorage.getItem("equipamentosSelecionados");
+
+let intervaloTurno = null;
+let intervaloTotal = null;
+let tempoTurno = TEMPO_POR_TURNO;
+let tempoTotal = TEMPO_TOTAL_BATALHA;
+let jogadaEmProcessamento = false;
 
 if (!heroiSalvo || !equipamentosSalvos) {
     alert("Selecione um herói e seus equipamentos antes da batalha.");
@@ -47,18 +57,11 @@ if (!heroiSalvo || !equipamentosSalvos) {
 function iniciarBatalha() {
     const dadosHeroi = JSON.parse(heroiSalvo);
     const dadosEquipamentos = JSON.parse(equipamentosSalvos);
-
-    // --------------------------------------------------
-    // 3.1 RECONSTRÓI O HERÓI
-    // --------------------------------------------------
-
-    const heroiJogador = heroisMock.find(
-        (heroi) => heroi.nome === dadosHeroi.nome
-    );
+    const heroiJogador = heroisMock.find((heroi) => heroi.nome === dadosHeroi.nome);
 
     if (!heroiJogador) {
-        alert("Não foi possível reconstruir o herói.");
-        window.location.href = "./herois.html";
+        alert("Não foi possível reconstruir o herói");
+        windows.location.href = "./herois.html";
         return;
     }
 
@@ -94,16 +97,11 @@ function iniciarBatalha() {
     // 3.3 SORTEIA O ADVERSÁRIO
     // --------------------------------------------------
 
-    const adversariosPossiveis = heroisMock.filter(
+    const adversarios = heroisMock.filter(
         (heroi) => heroi.nome !== heroiJogador.nome
     );
 
-    const indiceSorteado = Math.floor(
-        Math.random() * adversariosPossiveis.length
-    );
-
-    const heroiAdversario =
-        adversariosPossiveis[indiceSorteado];
+    const heroiAdversario = adversarios[Math.floor(Math.random() * adversarios.length)];
 
     // --------------------------------------------------
     // 3.4 CRIA A BATALHA
@@ -120,44 +118,29 @@ function iniciarBatalha() {
     );
 
     BatalhaView.atualizarRound(batalha.round);
+    BatalhaView.exibirPocao(pocao.nome);
+    BatalhaView.preencherEspeciais(selectEspecial, listarEspeciais(heroiJogador));
+    BatalhaView.adicionarLog(logBatalha, batalha.iniciar());
 
-    BatalhaView.adicionarLog(
-        logBatalha,
-        batalha.iniciar()
-    );
-
-    // --------------------------------------------------
-    // 3.5 EVENTOS DOS BOTÕES
-    // --------------------------------------------------
-
-    btnAtaque.addEventListener("click", () => {
-        executarJogada(
-            batalha,
-            heroiJogador.usarAtaqueComum()
-        );
-    });
-
-    btnDefesa.addEventListener("click", () => {
-        executarJogada(
-            batalha,
-            heroiJogador.usarDefesa()
-        );
-    });
-
-    btnEspecial.addEventListener("click", () => {
-        const acaoEspecial = criarAcaoEspecial(
-            heroiJogador,
-            batalha.round
-        );
-
-        executarJogada(
-            batalha,
-            acaoEspecial
-        );
-    });
+    configurarEventos(batalha, pocao);
+    iniciarTemporizadorTotal(batalha);
+    reiniciarTemporizadorTurno(batalha);
 }
 
+function configurarEventos(batalha, pocao) {
+    btnAtaque.addEventListener("click", () => executarJogada(batalha, batalha.heroiJogador.usarAtaqueComum()));
+    btnDefesa.addEventListener("click", () => executarJogada(batalha, batalha.heroiJogador.usarDefesa()));
+    btnEspecial.addEventListener("click", () => executarJogada(batalha, criarAcaoEspecial(batalha.heroiJogador,
+    batalha.round, selectEspecial.value)));
 
+    btnPocao.addEventListener("click", () => {
+        if (batalha.finalizada || jogadaEmProcessamento) return;
+        const resultado = batalha.usarPocao(batalha.heroiJogador, pocao);
+        BatalhaView.adicionarLog(logBatalha, resultado.mensagem);
+        BatalhaView.atualizarPersonagens(batalha.heroiJogador, batalha.heroiAdversario);
+        if (!resultado.erro) BatalhaView.marcarPocaoUsada();
+    });
+}
 // ======================================================
 // 4. EXECUÇÃO DE UMA JOGADA
 // ======================================================
