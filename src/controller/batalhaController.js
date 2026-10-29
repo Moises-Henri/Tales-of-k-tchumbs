@@ -147,17 +147,18 @@ function configurarEventos(batalha, pocao) {
 
 function executarJogada(batalha, acaoJogador) {
     if (batalha.finalizada || jogadaEmProcessamento) return; 
+    jogadaEmProcessamento = true;
+    clearInterval(intervaloTurno);
+    BatalhaView.bloquearAcoes();
 
     const acaoAdversario = sortearAcaoAdversario(batalha.heroiAdversario, batalha.round);
-
-    const logRound = batalha.executarRound(acaoJogador,acaoAdversario);
-
-    BatalhaView.adicionarLog(logBatalha,logRound);
+    const logRound = batalha.executarRound(acaoJogador, acaoAdversario);
+    BatalhaView.adicionarLog(logBatalha, logRound);
     atualizarTelaAposRound(batalha);
 
     const vencedor = batalha.verificarVencedor();
     if (vencedor || batalha.finalizada){
-        finalizarBatalha(batalha,vencedor || batalha.finalizarPorTempo());
+        finalizarBatalha(batalha, vencedor || batalha.finalizarPorTempo());
         return;
     }
 
@@ -247,7 +248,7 @@ function reiniciarTemporizadorTurno(batalha) {
         BatalhaView.atualizarTempoTurno(tempoTurno);
         if(tempoTurno <= 0){
             clearInterval(intervaloTurno);
-            BatalhaView.adicionarLog(logBatalha, " Tempo do jogador esgotado.");
+            BatalhaView.adicionarLog(logBatalha, "⏳ Tempo do jogador esgotado.");
             executarJogada(batalha, batalha.criarAcaoPassarTurno(batalha.heroiJogador));
         }
     }, 1000);
